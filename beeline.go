@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/honeycombio/beeline-go/propagation"
 	"github.com/honeycombio/libhoney-go/transmission"
 
 	"github.com/honeycombio/beeline-go/client"
@@ -184,6 +185,8 @@ func Init(config Config) {
 	if config.PresendHook != nil {
 		trace.GlobalConfig.PresendHook = config.PresendHook
 	}
+
+	propagation.GlobalConfig.PropagateDataset = false
 	return
 }
 
