@@ -40,6 +40,10 @@ func WrapHandlerWithConfig(handler http.Handler, cfg config.HTTPIncomingConfig) 
 		// replace the writer with our wrapper to catch the status code
 		wrappedWriter := common.NewResponseWriter(w)
 
+		if cfg.HTTPRequestSpanDecorator != nil {
+			cfg.HTTPRequestSpanDecorator(r, span)
+		}
+
 		mux, ok := handler.(*http.ServeMux)
 		if ok {
 			// this is actually a mux! let's do extra muxxy stuff

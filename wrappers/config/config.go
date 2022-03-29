@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/honeycombio/beeline-go/propagation"
+	"github.com/honeycombio/beeline-go/trace"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -16,6 +17,11 @@ import (
 // propagation package for a number of supported formats (e.g. Honeycomb, AWS,
 // W3C Trace Context, etc).
 type HTTPTraceParserHook func(*http.Request) *propagation.PropagationContext
+
+// HTTPRequestSpanDecoratorHook is a function that will be invoked on all incoming HTTP requests
+// when it is passed as a parameter to an http.Handler wrapper function. It can be used
+// to add additional fields to the span created for each incoming HTTP request.
+type HTTPRequestSpanDecoratorHook func(*http.Request, *trace.Span)
 
 // HTTPTracePropagationHook is a function that will be invoked on all outgoing HTTP requests
 // when it is passed as a parameter to a RoundTripper wrapper function such as the one
@@ -32,7 +38,8 @@ type HTTPTracePropagationHook func(*http.Request, *propagation.PropagationContex
 // HTTPIncomingConfig stores configuration options relevant to HTTP requests that are handled by
 // a wrapper.
 type HTTPIncomingConfig struct {
-	HTTPParserHook HTTPTraceParserHook
+	HTTPParserHook           HTTPTraceParserHook
+	HTTPRequestSpanDecorator HTTPRequestSpanDecoratorHook
 }
 
 // HTTPOutgoingConfig stores configuration options relevant to HTTP requests being sent by an
